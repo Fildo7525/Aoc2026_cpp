@@ -1,0 +1,5 @@
+build/
+.null-ls*
+compile
+run
+compile_commands.json
