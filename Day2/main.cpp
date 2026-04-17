@@ -66,9 +66,29 @@ std::vector<std::string> split(const std::string &str, const char delimiter)
 
 bool checkSequence(const std::string &id)
 {
-	const auto &a = id.substr(0, (id.size()/2));
-	const auto &b = id.substr(id.size()/2);
-	return a != b;
+	for (size_t i = 1; i <= id.size()/2; i++) {
+		if (id.size() % i != 0) {
+			continue;
+		}
+
+		const auto &a = id.substr(0, i);
+		bool isValid = true;
+
+		for (size_t j = 0; j  < id.length()/a.length(); j++) {
+			if (a == id.substr(a.length()*j, a.length())) {
+				isValid = false;
+			}
+			else {
+				isValid = true;
+				break;
+			}
+		}
+		if (not isValid) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 bool isValidID(const std::string &id)
