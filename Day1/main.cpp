@@ -1,7 +1,5 @@
 #include "Day1.h"
-#include <cstdint>
 #include <string>
-#include <vector>
 #include <print>
 
 int main(int argc, char *argv[])
@@ -11,7 +9,8 @@ int main(int argc, char *argv[])
 
 	int dial = 50;
 	int zero = 0;
-	std::println("The dial start by pointing at {}", dial);
+	std::println("The dial start by pointing at {}.", dial);
+	std::string info = "";
 
 	while (std::getline(input, line)) {
 		int rotation = std::stoi(line.substr(1));
@@ -19,15 +18,36 @@ int main(int argc, char *argv[])
 			rotation *= -1;
 		}
 
+		int oldDial = dial;
 		dial += rotation;
+
+		if (dial != 0) {
+			zero += std::abs(dial / 100);
+			if (dial % 100 == 0) {
+				zero -= 1;
+			}
+			if (dial / 100 != 0) {
+				info = std::format("During this rotation the dial points to zero {} times", dial / 100);
+			}
+			else {
+				info = "";
+			}
+
+			zero += (oldDial*dial < 0 ? 1 : 0);
+			if (oldDial*dial < 0 ? 1 : 0) {
+				info += " And once passed the boundry";
+			}
+		}
+
+		dial = dial % 100;
 
 		if (dial < 0) {
 			dial += 100;
 		}
 
-		dial = dial % 100;
 		zero += (dial == 0 ? 1 : 0);
-		std::println("The dial is rotated {} to point at {}", rotation, dial);
+
+		std::println("The dial is rotated {} to point at {}. {}", rotation, dial, info);
 	}
 
 
