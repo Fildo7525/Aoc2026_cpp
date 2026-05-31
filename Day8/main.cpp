@@ -116,9 +116,16 @@ int main()
 	};
 
 	// Process the MERGING_ITERATIONS closest pairs
-	for (size_t k = 0; k < MERGING_ITERATIONS && k < edges.size(); k++) {
+	for (size_t k = 0; k < edges.size(); k++) {
 		auto [dist, i, j] = edges[k];
 		unite(i, j);
+
+		if (std::all_of(circuits.begin(), circuits.end(), [&find](const int &i) { return find(i) == find(0); })) {
+			auto jb_a = junctionBoxes[i].x;
+			auto jb_b = junctionBoxes[j].x;
+			std::println("PT2: {}", jb_a * jb_b);
+			break;
+		}
 	}
 
 	// Count members per circuit
