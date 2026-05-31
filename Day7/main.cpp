@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <deque>
+#include <numeric>
 #include <ranges>
 #include <set>
 #include <print>
@@ -57,8 +58,7 @@ struct std::formatter<Point> {
     }
 };
 
-
-int main(int argc, char *argv[])
+void pt1()
 {
 	std::fstream input("../input", std::ios::in);
 	std::string line;
@@ -107,7 +107,57 @@ int main(int argc, char *argv[])
 
 
 	std::println("Counted {} splits", splits);
+}
 
-	return 0;
+std::vector<size_t> findAllOccurances(std::string_view str, const char c)
+{
+	std::vector<size_t> out;
+
+	for (size_t i = 0; i < str.size(); i++) {
+		size_t found = str.find(c, i);
+		if (found != std::string::npos) {
+			i = found;
+			out.push_back(found);
+		}
+	}
+
+	return out;
+}
+
+int main(int argc, char *argv[])
+{
+	using ull = unsigned long long;
+
+	std::fstream input("../input", std::ios::in);
+	std::string line;
+	std::getline(input, line);
+
+	auto start = Point{ .y = 0, .x = line.find('S') };
+	std::vector<ull> rays(line.size(), 0);
+
+	rays[start.x] = 1;
+
+	// std::println("{}: {}", line, rays);
+
+	int splits = 0;
+	while (std::getline(input, line)) {
+		auto occurances = findAllOccurances(line, '^');
+		// std::println("Occurances: {}", occurances);
+		for (auto &splitter : occurances) {
+			if (rays[splitter] != 0) {
+				// PT1
+				splits++;
+
+				// PT2
+				rays[splitter - 1] += rays[splitter];
+				rays[splitter + 1] += rays[splitter];
+				rays[splitter] = 0;
+			}
+		}
+		std::println("{}: {}", line, rays);
+	}
+
+	std::println("Splits: {}", splits);
+	std::println("Accumulated: {}", std::accumulate(rays.begin(), rays.end(), 0ull));
 }
 
